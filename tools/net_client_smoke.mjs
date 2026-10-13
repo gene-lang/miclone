@@ -49,7 +49,7 @@ import { hud, hotbar, fire, tick, key, click, lookDown, glDraws,
 
 const D = new URL("../dist/", import.meta.url).pathname;
 const MICLONE = new URL("../", import.meta.url).pathname;
-const GENE = process.env.GENE ?? new URL("../../../bin/gene", import.meta.url).pathname;
+const GENE = "gene";              // taken from PATH
 const WORLD = process.env.MICLONE_SMOKE_WORLD ?? "/tmp/miclone_smoke_world";
 const PORT = 8790;                 // `net_main.gene` dials this literally
 

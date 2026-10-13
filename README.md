@@ -22,23 +22,28 @@ See the current verification results under Checks.
 
 ## Running it
 
-Build optimized Gene from the repository root with `nimble speedy`, then use
-`export PATH="$(pwd)/bin:$PATH"` before changing directories. The absolute PATH
-entry keeps these commands on this checkout's compiler instead of another Gene
-installation. `tools/build_web.sh` selects the checkout's `bin/gene` by default;
-set `GENE_EXE` to override it. A failed module build prints its diagnostics.
+Miclone needs the `gene` executable on `PATH`. Build optimized Gene in a
+[Gene checkout](https://github.com/gene-lang/gene-new) with `nimble speedy`, then
+add that checkout's `bin` directory to `PATH` as an absolute path:
+
+```sh
+export PATH="/path/to/gene-new/bin:$PATH"
+```
+
+Every command below runs from this repository's root. `tools/build_web.sh` and
+the Node and Python harnesses under `tools/` take `gene` from `PATH` and stop
+with a message when it is missing. A failed module build prints its diagnostics.
 
 The reference source is a shallow clone of upstream, not vendored here, and only
 needed if you want to read it:
 
 ```sh
-git clone --depth 1 https://github.com/luanti-org/luanti examples/miclone/luanti
+git clone --depth 1 https://github.com/luanti-org/luanti luanti
 ```
 
 ### Singleplayer, in a tab
 
 ```sh
-cd examples/miclone
 tools/build_web.sh               # every portable module, into dist/
 python3 -m http.server 8000      # then open http://localhost:8000/
 ```
@@ -80,11 +85,16 @@ On macOS, install the desktop dependencies once:
 
 ```sh
 brew install sdl2 sdl2_ttf curl pkg-config
-cd examples/miclone
 python3 tools/run_native.py
 ```
 
-The launcher builds the libraries in `src/genex`, resolves the separate native package,
+The native package takes its SDL2 and WebSocket bindings from the Gene
+checkout's `src/genex`, and `native/package.gene` names them as
+`../../gene-new/src/genex`. Clone Gene beside this repository as `gene-new` and
+put that checkout's `bin` on `PATH`; the launcher refuses a `gene` from any
+other checkout.
+
+The launcher builds those libraries, resolves the separate native package,
 starts a local server when needed, and opens the SDL window. The controls match
 the browser client. `--no-build` reuses compiled libraries; `--font PATH`
 selects a font, `--world PATH` selects a local world, and `--url ws://HOST:PORT/`
@@ -92,7 +102,7 @@ connects to an existing server. The launcher stops servers it started when the
 client exits. A first launch can take several minutes to generate, transfer and
 mesh the world in the VM; the window shows loading progress.
 
-To build just the libraries, run `nimble genex` from the repository root.
+To build just the libraries, run `nimble genex` in the Gene checkout.
 
 Linux needs the corresponding development libraries, a libcurl build with
 WebSockets, and an installed TrueType/OpenType font. Pass `--pkg-config-path`
@@ -247,7 +257,7 @@ generate.
 lsof -tnP -iTCP:8790 -sTCP:LISTEN | xargs -r kill   # and wait for it to go
 rm -rf /tmp/miclone_play_world
 mkdir -p /tmp/miclone_play_world
-( cd examples/miclone && GENE_MICLONE_WORLD=/tmp/miclone_play_world gene run server & )
+( GENE_MICLONE_WORLD=/tmp/miclone_play_world gene run server & )
 ```
 
 **Wait on the port, not the log.** The server's stdout is block-buffered when it

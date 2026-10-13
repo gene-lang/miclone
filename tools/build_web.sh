@@ -10,14 +10,18 @@
 #   tools/build_web.sh            # incremental
 #   tools/build_web.sh --clean    # after a module was added or removed
 set -e
-cd "$(dirname "$0")/.."
-# Prefer this checkout: PATH may name a different Gene installation, or even
-# use a relative `bin` entry which changes meaning after the cd above.
-GENE_EXE=${GENE_EXE:-"$(pwd)/../../bin/gene"}
-if ! command -v "$GENE_EXE" >/dev/null 2>&1; then
-  echo "Gene executable not found: $GENE_EXE (build the checkout or set GENE_EXE)" >&2
+# Gene must be on PATH. Resolve it before changing directory: a relative PATH
+# entry such as `bin` names a different file after the cd below.
+GENE_EXE=$(command -v gene || true)
+if [ -z "$GENE_EXE" ]; then
+  echo "gene not found on PATH (add the Gene checkout's bin directory to PATH)" >&2
   exit 1
 fi
+case "$GENE_EXE" in
+  /*) ;;
+  *) GENE_EXE="$(pwd)/$GENE_EXE" ;;
+esac
+cd "$(dirname "$0")/.."
 
 if [ "$1" = "--clean" ]; then
   rm -rf dist

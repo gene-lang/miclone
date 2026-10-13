@@ -25,9 +25,9 @@ Section numbers are a stable reference. Roughly a thousand comments across the
 source cite them, so a number means the same thing for the life of the project
 even when the text under it is rewritten.
 
-Reference source: `examples/miclone/luanti/`, a shallow clone of
+Reference source: `luanti/`, a shallow clone of
 <https://github.com/luanti-org/luanti> at the tip of `master`. It is not vendored
-into this repository (see `examples/miclone/.gitignore`). Upstream is
+into this repository (see `.gitignore`). Upstream is
 LGPL-2.1-or-later (engine) with CC-BY-SA assets. **We read it; we do not copy
 from it.** See §D9.
 
@@ -471,7 +471,7 @@ over runs; until it has one, a single red C is not evidence of a regression.
 
 This is the "add missing features and libraries along the way" list, ordered by
 when it blocks. Each item is a contribution to Gene rather than to the game, and
-each lands with the spec coverage the repo requires (`nimble spec`,
+each lands with the spec coverage the Gene repository requires (`nimble spec`,
 `nimble transpile_spec`).
 
 **1. WebGL2 host bindings + typed arrays (web profile). Blocked M0. Landed.**
@@ -2562,7 +2562,7 @@ budget. Regressions are reported with numbers, not hidden.
 # Appendix A — Upstream source map
 
 What to read while implementing each part. Paths are relative to
-`examples/miclone/luanti/`.
+`luanti/`.
 
 | this design | upstream |
 |---|---|
@@ -2583,7 +2583,7 @@ What to read while implementing each part. Paths are relative to
 # Appendix B — Repository layout
 
 ```
-examples/miclone/
+miclone/
   package.gene            library + applications
   docs/design.md          this file
   luanti/                 reference clone (gitignored)

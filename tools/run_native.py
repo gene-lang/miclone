@@ -5,6 +5,7 @@ import argparse
 import json
 import os
 import platform
+import shutil
 import socket
 import struct
 import subprocess
@@ -14,10 +15,29 @@ import time
 import zlib
 
 MICLONE = Path(__file__).resolve().parents[1]
-ROOT = MICLONE.parents[1]
 NATIVE = MICLONE / "native"
-GENE = str(ROOT / "bin/gene")
 URL = "ws://127.0.0.1:8790/"
+
+
+def gene_checkout():
+    """Return the gene executable on PATH and the Gene checkout it belongs to.
+
+    The native shell uses the SDL2 and WebSocket bindings in that checkout's
+    src/genex. native/package.gene names them as ../../gene-new/src/genex, so
+    the checkout that provides gene has to be the one beside this repository.
+    """
+    found = shutil.which("gene")
+    if not found:
+        sys.exit("gene not found on PATH (add the Gene checkout's bin directory to PATH)")
+    gene = Path(found).resolve()
+    root = gene.parents[1]
+    if not (root / "src/genex/tools/build.py").is_file():
+        sys.exit(f"{gene} is not inside a Gene checkout: {root / 'src/genex'} is missing")
+    sibling = (MICLONE.parent / "gene-new").resolve()
+    if root != sibling:
+        sys.exit(f"gene on PATH belongs to {root}, but native/package.gene takes its libraries "
+                 f"from {sibling}; put that checkout's bin directory first on PATH")
+    return str(gene), root
 
 
 def port_open():
@@ -54,6 +74,7 @@ def main():
     parser.add_argument("--world", default="/tmp/miclone_native_world")
     parser.add_argument("--pkg-config-path", action="append", default=[])
     args = parser.parse_args()
+    GENE, ROOT = gene_checkout()
     if args.smoke and (args.url != URL or port_open()):
         parser.error("--smoke requires the default local URL and a free port 8790")
     font = args.font

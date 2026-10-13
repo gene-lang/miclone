@@ -5,5 +5,5 @@
  ^applications [(application "miclone" ^entry "main.gene")]
  ^dependencies {
    ^engine (dep "gene/miclone" "0.1.0" ^path "..")
-   ^sdl2 (dep "genex/sdl2" "0.1.0" ^path "../../../src/genex/sdl2")
-   ^websocket (dep "genex/websocket" "0.1.0" ^path "../../../src/genex/websocket")}}
+   ^sdl2 (dep "genex/sdl2" "0.1.0" ^path "../../gene-new/src/genex/sdl2")
+   ^websocket (dep "genex/websocket" "0.1.0" ^path "../../gene-new/src/genex/websocket")}}
